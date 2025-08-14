@@ -319,6 +319,13 @@
                 }
                 break;
             
+            case sceneId.startsWith('s8'):
+                if (bgmGraduate.paused) {
+                    stopAllMusic();
+                    bgmGraduate.play();
+                }
+                break;
+            
             // 엔딩 씬일 경우 (showEnding 함수에서 별도 처리)
             case sceneId.startsWith('end_'):
                 // 아무것도 하지 않음
