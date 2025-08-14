@@ -537,7 +537,7 @@
 
                       // 2. 다음 코멘트로 교체되기 전에 서서히 사라지게 함
                       // (전체 주기 시간보다 약간 일찍 사라지도록 설정)
-                      const fadeOutTime = 4000; // 4초 뒤에 사라지기 시작
+                      const fadeOutTime = 3000; // 3초 뒤에 사라지기 시작
                       setTimeout(() => {
                           creditP.style.opacity = 0;
                       }, fadeOutTime);
@@ -548,7 +548,7 @@
 
                   // 4. 게임 시작 시 첫 코멘트를 즉시 보여주고,
                   // 그 후로는 5초마다 코멘트를 반복해서 교체
-                  const cycleInterval = 5000; // 5초마다 반복 (이 값을 조절해 속도 변경)
+                  const cycleInterval = 4000; // 4초마다 반복 (이 값을 조절해 속도 변경)
                   cycleCredits(); // 첫 실행
                   setInterval(cycleCredits, cycleInterval);
               }
