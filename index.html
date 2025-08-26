@@ -179,7 +179,6 @@
     const bgmHappy = document.getElementById('bgm-happy');
     const bgmBad = document.getElementById('bgm-bad');
     const bgmHidden = document.getElementById('bgm-hidden');
-    // 모든 오디오를 배열로 관리하면 편리합니다.
     const allAudios = [bgmMain, bgmWalk, bgmGame, bgmGolden, bgmTrot, bgmPeppermint, bgmGraduate, bgmHappy, bgmBad, bgmHidden];
     
     const scenarios = {
@@ -249,7 +248,8 @@
       's7_5_0_4': {bgImage: 'game/karaoke.jpg', text: "단 한 번만이라도", choices: [], autoNext: { duration: 7000, nextScene: 's7_5_1' } },
       's7_5_1': { bgImage: 'game/s7_3.jpg', text: "모란 장터손칼국수에 왔습니다! 어떤 메뉴를 먹을까요?", choices: [ { text: "바지락 칼국수", effect: {}, feedback: "먹을 줄 아시는데요?", next: 's7_5_2' }, { text: "얼큰 수제비", effect: { 고재쌤: 1 }, feedback: "맛잘알의 선택!", next: 's7_5_2' }, { text: "떡만두국", effect: {}, feedback: "먹을 줄 아시는데요?", next: 's7_5_2' } ] },
       's7_5_2': { bgImage: 'game/s7_4.jpg', text: "사색에 잠겼습니다. 당신의 인생에서 가장 중요한 것은 무엇인가요?", choices: [ { text: "사랑", effect: { 고재쌤: 1 }, feedback: "사랑을 하면 무엇이든 할 수 있지만, 사랑을 하지 않으면 어느 것도 할 수 없죠!", next: 's8' }, { text: "성공", effect: {}, feedback: "야망 있으시군요!", next: 's8' }, { text: "건강", effect: {}, feedback: "건강이 역시 최우선이죠!", next: 's8' } ] },
-      
+
+      // 시나리오 8
       's8': { bgImage: 'game/s8.jpg', text: "시나리오 8: 졸업식", choices: [ { text: "계속하기", next: 's8_1' } ] },
       's8_1': { bgImage: 'game/s5_1.jpg', text: "벌써 졸업식 날입니다. 출근하는 당신의 기분은 어떤가요?", choices: [ { text: "긴장되고 설레면서도 아쉬운 마음이 든다.", effect: { 학생친밀도: 1 }, feedback: "학생들과 마지막이라니...", next: 's8_2' }, { text: "마지막까지 좋은 모습을 보이기 위해 책임감을 느낀다.", effect: { 교사능력치: 1 }, feedback: "마지막까지 믿음직한 교사군요!", next: 's8_2' }, { text: "이제 한동안 아이들을 안 본다니, 너무 신이 난다.", effect: { 체력: -1 }, feedback: "교사를 하지 않는 것이 좋지 않을까요...? 체력 깎습니다. 체력 -1", next: 's8_2' } ] },
       's8_2': { bgImage: 'game/s8.jpg', text: "졸업식이 진행 중입니다. 제자들에게 어떤 말을 건넬까요?", choices: [ { text: "진심 어린 축하와 격려의 말을 전한다.", effect: { 학생친밀도: 1 }, feedback: "학생들이 감동하며 당신과의 추억을 마음에 새깁니다.", next: 'ending' }, { text: "앞으로의 삶에 도움이 될 조언을 건넨다.", effect: { 교사능력치: 1 }, feedback: "현실적이지만 따뜻한 조언이 학생들의 마음에 깊이 남습니다.", next: 'ending' }, { text: "별 말 하지 않는다.", effect: { 체력: -1, 교사능력치: -1 }, feedback: "당신은 아무래도 교사가 적성에 맞지 않는 것 같습니다... 체력 -1", next: 'ending' } ] },
@@ -269,35 +269,29 @@
     function stopAllMusic() {
         allAudios.forEach(audio => {
             audio.pause();
-            audio.currentTime = 0; // 재생 위치를 처음으로 돌림
+            audio.currentTime = 0;
         });
     }
 
     // 현재 장면에 맞는 배경음악을 관리하는 함수
     function manageAudio(sceneId) {
-        // 특정 시나리오 ID에 따라 음악을 분기합니다.
         switch (true) {
-            // 시나리오 3 '산책' 분기 (s3_2, s3_3_x)
-            // '산책'을 선택하면 s3_2로 가고, 그 후 s3_3_...으로 이어집니다.
             case sceneId.startsWith('s3_2'):
             case sceneId.startsWith('s3_3_'):
-                if (bgmWalk.paused) { // 산책 BGM이 멈춰있다면
+                if (bgmWalk.paused) {
                     stopAllMusic();
                     bgmWalk.play();
                 }
                 break;
 
-            // 시나리오 3 '게임' 분기 (s3_4, s3_5_x)
-            // '게임'을 선택하면 s3_4로 가고, 그 후 s3_5_...으로 이어집니다.
             case sceneId.startsWith('s3_4'):
             case sceneId.startsWith('s3_5_'):
-                if (bgmGame.paused) { // 게임 BGM이 멈춰있다면
+                if (bgmGame.paused) {
                     stopAllMusic();
                     bgmGame.play();
                 }
                 break;
             
-            // 시나리오 7 '휴일2' 분기
             case sceneId.startsWith('s7_3_'):
                 if (bgmGolden.paused) {
                     stopAllMusic();
@@ -326,15 +320,10 @@
                 }
                 break;
             
-            // 엔딩 씬일 경우 (showEnding 함수에서 별도 처리)
             case sceneId.startsWith('end_'):
-                // 아무것도 하지 않음
                 break;
 
-            // 그 외 모든 일반 시나리오 (메인 BGM 재생)
             default:
-                // 시나리오 3 '집콕'을 선택하면 s3_6으로 가는데,
-                // 이 장면은 위 조건에 해당하지 않으므로 default로 처리됩니다.
                 if (bgmMain.paused) {
                     stopAllMusic();
                     bgmMain.play();
@@ -407,16 +396,13 @@
         });
         
         if (scene.autoNext) {
-            // 정해진 시간(duration)이 지난 후에 다음 행동을 예약
             setTimeout(() => {
-                // 다음 장면으로 넘어가기 전에, 원래 스타일로 복구
                 storyEl.style.fontSize = '18px';
                 storyEl.style.color = '#333';
                 storyEl.style.lineHeight = '1.7';
                 storyEl.style.textAlign = 'left';
                 document.body.style.backgroundColor = '#f1f6ff';
 
-                // 다음 장면을 표시하기 위해 showScene 함수를 다시 호출
                 showScene(scene.autoNext.nextScene);
             }, scene.autoNext.duration);
         }
@@ -451,13 +437,13 @@
         let endingId;
         if (forcedEndingId) {
           endingId = forcedEndingId;
-        } else if (stats.고재쌤 >= 4) {
+        } else if (stats.고재쌤 >= 3) {
           endingId = 'end_hidden';
-        } else if (stats.학생친밀도 >= 11) {
+        } else if (stats.학생친밀도 >= 10) {
           endingId = 'end_happy_1';
-        } else if (stats.교사능력치 >= 10) {
+        } else if (stats.교사능력치 >= 9) {
           endingId = 'end_happy_2';
-        } else if (stats.교사능력치 >= 6 && stats.학생친밀도 >= 6) {
+        } else if (stats.교사능력치 >= 5 && stats.학생친밀도 >= 5) {
           endingId = 'end_happy_3';
         } else {
           endingId = 'end_bad_2';
@@ -512,17 +498,15 @@
               finalTitle.style.color = '#4a69bd';
               storyEl.appendChild(finalTitle);
 
-                            // 히든 엔딩의 경우 크레딧을 순환하며 보여줍니다.
               if (endingId === 'end_hidden') {
                   const creditContainer = document.createElement('div');
                   creditContainer.className = 'ending-credits';
                   
-                  // 코멘트가 표시될 단일 p 태그 생성
                   const creditP = document.createElement('p');
-                  creditP.style.opacity = 0; // 처음엔 투명하게
-                  creditP.style.transition = 'opacity 1.5s ease-in-out'; // 1.5초 동안 부드럽게 사라지고 나타나도록 설정
-                  creditP.style.fontSize = '17px'; // 폰트 크기 살짝 키우기
-                  creditP.style.fontWeight = '500'; // 폰트 두께 조절
+                  creditP.style.opacity = 0;
+                  creditP.style.transition = 'opacity 1.5s ease-in-out';
+                  creditP.style.fontSize = '17px';
+                  creditP.style.fontWeight = '500';
                   
                   creditContainer.appendChild(creditP);
                   storyEl.appendChild(creditContainer);
@@ -533,7 +517,6 @@
                       "\"선생님 알러뷰입니다\"",
                       "\"선생님 한 학기 동안 수고 많으셨어요!\n저희 반 이끌어주시느라 힘드셨을텐데 감사합니다ㅎㅎ\n앞으로도 잘 부탁드려요!!\"",
                       "\"고재샘 우리반 포에버!!\"",
-                      "\"쌤 제 입시 준비에 도움 많이 주셔서 항상 감사하게 생각하고 있고\n상담할 때 공감도 열심히 해주셔서 편안하게 쌤이랑 상담할 수 있었던 것 같아요.\n감사합니당!!\"",
                       "\"고등학교 3학년이라는 특별한 1년을 선생님과 함께해서 좋았습니다.\n감사합니다.\"",
                       "\"선생님 바보 ㅋㅋ\"",
                       "\"고3 때 친근한 쌤 만나서 부담이 준 것 같아서 좋았어요!\"",
@@ -542,31 +525,23 @@
                   ];
                   let creditIndex = 0;
 
-                  // 코멘트를 순환시키는 함수
                   function cycleCredits() {
-                      // 1. 현재 코멘트 내용을 설정하고 서서히 나타나게 함
                       creditP.innerText = credits[creditIndex];
                       creditP.style.opacity = 1;
 
-                      // 2. 다음 코멘트로 교체되기 전에 서서히 사라지게 함
-                      // (전체 주기 시간보다 약간 일찍 사라지도록 설정)
                       const fadeOutTime = 3000; // 3초 뒤에 사라지기 시작
                       setTimeout(() => {
                           creditP.style.opacity = 0;
                       }, fadeOutTime);
 
-                      // 3. 다음 코멘트 인덱스로 이동 (배열 끝에 도달하면 처음으로)
                       creditIndex = (creditIndex + 1) % credits.length;
                   }
 
-                  // 4. 게임 시작 시 첫 코멘트를 즉시 보여주고,
-                  // 그 후로는 5초마다 코멘트를 반복해서 교체
-                  const cycleInterval = 4000; // 4초마다 반복 (이 값을 조절해 속도 변경)
-                  cycleCredits(); // 첫 실행
+                  const cycleInterval = 4000;
+                  cycleCredits();
                   setInterval(cycleCredits, cycleInterval);
               }
 
-              // '다시 하기' 버튼 추가 (위치는 동일)
               choicesEl.innerHTML = `<button class="choice-btn" onclick="location.reload()">다시 하기</button>`;
             }, 1000);
           }
@@ -576,7 +551,6 @@
       });
     }
 
-    // 게임 시작
     showScene(currentSceneId);
   </script>
 </body>
